@@ -9,12 +9,7 @@ class Dance():
         self.callers = callers
 
     def __str__(self):
-        # TODO: must be a nicer way to do this
-        callers_str = ""
-        for c in self.callers:
-            callers_str = callers_str + str(c) + ", "
-        callers_str = callers_str[:-2]
-        
+        callers_str = ", ".join([str(c) for c in self.callers])        
         return "{self.date}, {self.location}, {self.band}, {callers_str}".format(**locals())
 
 class Band():
@@ -27,11 +22,7 @@ class Band():
         self.name = name
 
     def __str__(self):
-        s = self.name + " ("
-        # TODO: should be able to accumulate here
-        for m in self.members:
-            s = s + str(m) + ", "
-        s = s[:-2] + ")"
+        s = self.name + " (" + ", ".join([str(m) for m in self.members]) + ")"
         return s
 
 class Person():
@@ -128,5 +119,5 @@ def print_dict_value_ordered(d):
 if __name__ == "__main__":
     filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     dances = parse_file(filename)
-    bands = get_most_booked_bands(dances)
-    print_dict_value_ordered(bands)
+    for d in dances:
+        print(d)
