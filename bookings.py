@@ -1,4 +1,4 @@
-
+from datetime import date
 
 class Dance():
     def __init__(self, date, location, band, callers):
@@ -43,27 +43,35 @@ def get_person_name_location(s):
 
     (name, loc) = s.split("[")
     return name.strip(), loc.strip()[:-1].strip()
-        
+
+def date_from_string(s):
+    (month, day, year) = s.strip().split("/")
+    return date(month=int(month), day=int(day), year=int(year))
+
 def parse_file(filename):
     dances = []
     lines = open(filename).readlines()
 
     for l in lines:
-        (date, dance_location, callers, band_info) = l.split(",", 3)
+        (dance_date, dance_location, callers, band_info) = l.split(",", 3)
 
+        # caller info
         callers_list = []
         for c in callers.split("and"):
             (caller_name, caller_location) = get_person_name_location(c)
             callers_list.append(Person(caller_name, caller_location))
 
+        # band info
         (band_name, band_members) = band_info.split("(")
         band_members_list = []
+        # TODO: carry over band location to musicians
         for m in band_members.strip()[:-1].split(","):
             (name, location) = get_person_name_location(m)
             band_members_list.append(Person(name=name, location=location))
-        
+
+        # actually create the band
         dances.append(Dance(
-            date = date.strip(), # TODO: make an actual datetime
+            date = date_from_string(dance_date), # TODO: make an actual datetime
             location = dance_location.strip(),
             band = Band(
                 name = band_name.strip(),
