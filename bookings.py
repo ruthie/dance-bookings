@@ -19,8 +19,12 @@ class Dance():
 
 class Band():
     def __init__(self, name, members):
-        self.name = name
         self.members = members
+        if name == "":
+            names = [m.name for m in members]
+            names.sort()
+            name = ", ".join(names)
+        self.name = name
 
     def __str__(self):
         s = self.name + " ("
@@ -94,6 +98,9 @@ def get_most_booked_musicians(dances):
 def get_most_booked_callers(dances):
     return frequency_dict(dances, lambda x: x.callers)
 
+def get_most_booked_bands(dances):
+    return frequency_dict(dances, lambda x: [x.band])
+
 def frequency_dict(dances, getter):
     items = {}
     for d in dances:
@@ -121,5 +128,5 @@ def print_dict_value_ordered(d):
 if __name__ == "__main__":
     filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     dances = parse_file(filename)
-    callers = get_most_booked_callers(dances)
-    print_dict_value_ordered(callers)
+    bands = get_most_booked_bands(dances)
+    print_dict_value_ordered(bands)
