@@ -60,7 +60,7 @@ def parse_file(filename):
 
         # caller info
         callers_list = []
-        for c in callers.split("and"):
+        for c in callers.split(" and "):
             (caller_name, caller_location) = get_name_location(c)
             callers_list.append(Person(caller_name, caller_location))
 
@@ -89,15 +89,21 @@ def parse_file(filename):
     return dances
 
 def get_most_booked_musicians(dances):
-    musicians = {}
-    for d in dances:
-        dance_musicians = d.band.members
-        for m in dance_musicians:
-            if m.name not in musicians:
-                musicians[m.name] = 0
-            musicians[m.name] = musicians[m.name] + 1
+    return frequency_dict(dances, lambda x: x.band.members)
 
-    return musicians
+def get_most_booked_callers(dances):
+    return frequency_dict(dances, lambda x: x.callers)
+
+def frequency_dict(dances, getter):
+    items = {}
+    for d in dances:
+        dance_items = getter(d)
+        for i in dance_items:
+            if i.name not in items:
+                items[i.name] = 0
+            items[i.name] = items[i.name] + 1
+
+    return items
 
 def print_dict_alphabetical(d):
     for k in sorted(d.keys()):
@@ -115,5 +121,5 @@ def print_dict_value_ordered(d):
 if __name__ == "__main__":
     filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     dances = parse_file(filename)
-    musicians = get_most_booked_musicians(dances)
-    print_dict_value_ordered(musicians)
+    callers = get_most_booked_callers(dances)
+    print_dict_value_ordered(callers)
