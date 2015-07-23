@@ -1,4 +1,5 @@
 from datetime import date
+from collections import OrderedDict
 
 class Dance():
     def __init__(self, date, location, band, callers):
@@ -41,9 +42,8 @@ class Person():
 
 def get_name_location(s):
     if "[" not in s:
-        return s, None
+        return s.strip(), None
 
-    print(s)
     (name, loc) = s.split("[")
     return name.strip(), loc.strip()[:-1].strip()
 
@@ -88,9 +88,32 @@ def parse_file(filename):
     
     return dances
 
+def get_most_booked_musicians(dances):
+    musicians = {}
+    for d in dances:
+        dance_musicians = d.band.members
+        for m in dance_musicians:
+            if m.name not in musicians:
+                musicians[m.name] = 0
+            musicians[m.name] = musicians[m.name] + 1
+
+    return musicians
+
+def print_dict_alphabetical(d):
+    for k in sorted(d.keys()):
+        print("{}: {}".format(k, d[k]))
+
+def print_dict_value_ordered(d):
+    # TODO: bla how sholud I actually do this?
+    tuples = [(k, d[k]) for k in d.keys()]
+    tuples.sort(key=lambda x: x[1], reverse=True)
+    od = OrderedDict(tuples)
+
+    for k in od:
+        print("{}: {}".format(k, od[k]))
+        
 if __name__ == "__main__":
     filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     dances = parse_file(filename)
-    for d in dances:
-        print(d)
-        
+    musicians = get_most_booked_musicians(dances)
+    print_dict_value_ordered(musicians)
