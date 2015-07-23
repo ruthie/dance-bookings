@@ -11,7 +11,7 @@ class Dance():
         # TODO: must be a nicer way to do this
         callers_str = ""
         for c in self.callers:
-            callers_str = callers_str + c.name + ", "
+            callers_str = callers_str + str(c) + ", "
         callers_str = callers_str[:-2]
         
         return "{self.date}, {self.location}, {self.band}, {callers_str}".format(**locals())
@@ -30,17 +30,20 @@ class Band():
         return s
 
 class Person():
-    def __init__(self, name, location="Bay Area"):
+    def __init__(self, name, location):
         self.name = name
+        if location is None:
+            location = "Bay Area"
         self.location = location
 
     def __str__(self):
-        return self.name
+        return self.name + "/" + self.location
 
-def get_person_name_location(s):
+def get_name_location(s):
     if "[" not in s:
-        return s, "Bay Area"
+        return s, None
 
+    print(s)
     (name, loc) = s.split("[")
     return name.strip(), loc.strip()[:-1].strip()
 
@@ -58,20 +61,23 @@ def parse_file(filename):
         # caller info
         callers_list = []
         for c in callers.split("and"):
-            (caller_name, caller_location) = get_person_name_location(c)
+            (caller_name, caller_location) = get_name_location(c)
             callers_list.append(Person(caller_name, caller_location))
 
         # band info
         (band_name, band_members) = band_info.split("(")
         band_members_list = []
-        # TODO: carry over band location to musicians
+        (band_name, band_location) = get_name_location(band_name)
+        
         for m in band_members.strip()[:-1].split(","):
-            (name, location) = get_person_name_location(m)
-            band_members_list.append(Person(name=name, location=location))
+            (member_name, member_location) = get_name_location(m)
+            if member_location is None:
+                member_location = band_location
+            band_members_list.append(Person(name=member_name, location=member_location))
 
         # actually create the band
         dances.append(Dance(
-            date = date_from_string(dance_date), # TODO: make an actual datetime
+            date = date_from_string(dance_date),
             location = dance_location.strip(),
             band = Band(
                 name = band_name.strip(),
