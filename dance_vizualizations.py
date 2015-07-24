@@ -12,22 +12,32 @@ def write_html(dances, filename):
     caller_html = get_calendar_html_for_date_range(start_date, end_date, "caller")
     
     html = '''<head>
+  <title>Bay Area Dance Booking Visualization</title>
   <link rel="stylesheet" type="text/css" href="viz.css">
 </head>
 <body>
+  <h2>bands</h2>
   {}
+  <h2>callers</h2>
   {}
 </body>'''.format(band_html, caller_html)
     f.write(html)
 
 def write_css(dances, css_filename):
     f = open(css_filename, 'w')
+
+    width_percentage = 1.0 / (len(dances) / 7 + 1)
+    
     start_css = '''
 .day {
-    width: 20px;
-    height: 20px;
+    width: 10px;
+    height: 10px;
 }
-'''    
+
+table {
+    border-spacing: 1px;
+}
+'''
     band_css = get_css_string(dances, "band", lambda x: x.band.name)
     caller_css = get_css_string(dances, "caller", lambda x: x.callers[0].name)
 
