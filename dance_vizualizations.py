@@ -15,12 +15,8 @@ def write_html(dances, filename):
   <link rel="stylesheet" type="text/css" href="viz.css">
 </head>
 <body>
-  <table>
-    <tr>
-      <td>{}</td>
-      <td>{}</td>
-    </tr>
-  </table>
+  {}
+  {}
 </body>'''.format(band_html, caller_html)
     f.write(html)
 

@@ -21,15 +21,17 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     end_date_with_padding = end_date + timedelta(days=extra_days_end)
     
     html = start_html
-    next_date = start_date_with_padding
-    while next_date <= end_date_with_padding:
+
+    # the first row of the table is sundays, second row mondays, etc.
+    for i in range(7):
+        next_date = start_date_with_padding + timedelta(days=i)
         row_start = "<tr>"
         row_end = "</tr>\n"
 
         html = html + row_start
-        for i in range(7):
+        while next_date <= end_date_with_padding:
             html = html + '<td><div class="day {}"></td>'.format(class_name_for_date_with_prefix(css_prefix, next_date))
-            next_date = next_date + timedelta(days=1)
+            next_date = next_date + timedelta(days=7) # a week later!
         
         html = html + row_end
 
