@@ -38,8 +38,9 @@ table {
     border-spacing: 1px;
 }
 '''
-    band_css = get_css_string(dances, "band", lambda x: x.band.name)
-    caller_css = get_css_string(dances, "caller", lambda x: x.callers[0].name)
+
+    band_css = get_css_string(dances, "band", lambda d: color_for_string(d.band.name))
+    caller_css = get_css_string(dances, "caller", lambda d: color_for_string(d.callers[0].name))
 
     f.write(start_css)
     f.write(band_css)

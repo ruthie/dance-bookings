@@ -1,9 +1,5 @@
 from datetime import timedelta, date
 
-# TODO: add support for callers
-# TODO: add support for multiple dances per day
-# TODO: tooltips
-
 def class_name_for_date_with_prefix(prefix, date):
     return "{}-{}".format(prefix, str(date))
 
@@ -45,14 +41,12 @@ def get_css_string(dances, prefix, key_generator):
 .%s {
     background-color: #%s;
 }
-''' % (class_name_for_date_with_prefix(prefix, dance.date), color_for_string(key_generator(dance)))
+''' % (class_name_for_date_with_prefix(prefix, dance.date), key_generator(dance))
         css = css + dance_css
         
     return css
-    
+
 def color_for_string(s):
-    # TODO: handle spaces
-    # TODO: this should somehow deal with common prefixes
     s = s.lower()
 
     if s.startswith("the "):
@@ -62,7 +56,12 @@ def color_for_string(s):
 
 def hex_chars_for_char(c):
     scale_factor = 16*16/26
+
     int_val = (ord(c) - ord('a')) * scale_factor
+    # not a letter case
+    if int_val < 0 or int_val >= 26*scale_factor:
+        return "00"
+    
     # remove the "0x"
     hex_val = hex(int_val)[2:]
     # if you get a number like 9 here, we actually want "09"
