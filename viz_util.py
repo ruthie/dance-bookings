@@ -7,6 +7,8 @@ def class_name_for_date_with_prefix(prefix, date):
 def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     start_html = '<table>'
     end_html = '</table>'
+    row_start = "<tr>"
+    row_end = "</tr>\n"
 
     # need to pad at the beginning and end to get a rectangular grid
     extra_days_start = start_date.weekday() + 1
@@ -19,11 +21,23 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     
     html = start_html
 
+    # first we need a row with years in it
+    next_date = start_date_with_padding
+    last_date = None
+    row = row_start
+    while next_date <= end_date_with_padding:
+        if not last_date or next_date.year > last_date.year:
+            row = row + "<td>{}</td>".format(next_date.year)
+        else:
+            row = row + "<td></td>"
+        last_date = next_date
+        next_date = next_date + timedelta(days=7)
+
+    html = html + row + row_end        
+    
     # the first row of the table is sundays, second row mondays, etc.
     for i in range(7):
         next_date = start_date_with_padding + timedelta(days=i)
-        row_start = "<tr>"
-        row_end = "</tr>\n"
 
         html = html + row_start
         while next_date <= end_date_with_padding:
