@@ -1,6 +1,6 @@
 from datetime import date
 from bookings import parse_file
-from viz import *
+from viz_util import *
 
 def write_html(dances, filename):
     f = open(filename, 'w')

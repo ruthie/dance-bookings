@@ -57,7 +57,7 @@ def color_for_string(s):
 
     if s.startswith("the "):
         s = s[4:]
-    
+
     return hex_chars_for_char(s[0]) + hex_chars_for_char(s[1]) + hex_chars_for_char(s[2])
 
 def hex_chars_for_char(c):
