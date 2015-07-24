@@ -16,6 +16,7 @@ def write_html(dances, filename):
   <link rel="stylesheet" type="text/css" href="viz.css">
 </head>
 <body>
+  <h1>Bay Area Contra Dance Bookings</h1>
   <h2>bands</h2>
   {}
   <h2>callers</h2>
@@ -29,6 +30,11 @@ def write_css(dances, css_filename):
     width_percentage = 1.0 / (len(dances) / 7 + 1)
     
     start_css = '''
+body {
+    font-family: sans-serif;
+    font-size: xx-large;
+}
+
 .day {
     width: 10px;
     height: 10px;
