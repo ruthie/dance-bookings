@@ -26,9 +26,16 @@ def write_html(dances, filename):
 
 def write_css(dances, css_filename):
     f = open(css_filename, 'w')
+    start_css = '''
+.day {
+    width: 20px;
+    height: 20px;
+}
+'''    
     band_css = get_css_string(dances, "band", lambda x: x.band.name)
     caller_css = get_css_string(dances, "caller", lambda x: x.callers[0].name)
 
+    f.write(start_css)
     f.write(band_css)
     f.write(caller_css)
 

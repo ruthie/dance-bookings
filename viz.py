@@ -37,14 +37,7 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     return html
 
 def get_css_string(dances, prefix, key_generator):
-    start_css = '''
-.day {
-    width: 20px;
-    height: 20px;
-}
-'''
-    css = start_css
-
+    css = ''
     for dance in dances:
         dance_css = '''
 .%s {
