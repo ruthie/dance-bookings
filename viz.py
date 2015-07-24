@@ -65,6 +65,9 @@ def hex_chars_for_char(c):
     int_val = (ord(c) - ord('a')) * scale_factor
     # remove the "0x"
     hex_val = hex(int_val)[2:]
+    # if you get a number like 9 here, we actually want "09"
+    if len(hex_val) == 1:
+        hex_val = "0" + hex_val
     return hex_val
 
     
