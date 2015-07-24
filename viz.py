@@ -1,7 +1,7 @@
 from datetime import timedelta, date
 
+# TODO: add support for callers
 # TODO: add support for multiple dances per day
-# TODO: add support for bands
 # TODO: tooltips
 
 def class_name_for_date(d):
@@ -19,12 +19,13 @@ def write_html(start_date, end_date, filename):
 </body>'''
     f.write(start_html)
     
-    # TODO: shift so that Sunday is on far Left
     # need to pad at the beginning and end to get a rectangular grid
-    extra_days_start = start_date.weekday()
+    extra_days_start = start_date.weekday() + 1
     start_date_with_padding = start_date - timedelta(days=extra_days_start)
 
-    extra_days_end = 6 - end_date.weekday()
+    extra_days_end = 5 - end_date.weekday()
+    if extra_days_end == -1:
+        extra_days_end = 6
     end_date_with_padding = end_date + timedelta(days=extra_days_end)
     
     next_date = start_date_with_padding
@@ -34,8 +35,8 @@ def write_html(start_date, end_date, filename):
         f.write(row_start)
 
         for i in range(7):
-            next_date = next_date + timedelta(days=1)
             f.write('<td><div class="day {}"></td>'.format(class_name_for_date(next_date)))
+            next_date = next_date + timedelta(days=1)
         
         f.write(row_end)
 
