@@ -11,9 +11,18 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     start_html = '<table>'
     end_html = '</table>'
 
+    # need to pad at the beginning and end to get a rectangular grid
+    extra_days_start = start_date.weekday() + 1
+    start_date_with_padding = start_date - timedelta(days=extra_days_start)
+
+    extra_days_end = 5 - end_date.weekday()
+    if extra_days_end == -1:
+        extra_days_end = 6
+    end_date_with_padding = end_date + timedelta(days=extra_days_end)
+    
     html = start_html
-    next_date = start_date
-    while next_date <= end_date:
+    next_date = start_date_with_padding
+    while next_date <= end_date_with_padding:
         row_start = "<tr>"
         row_end = "</tr>\n"
 
@@ -27,49 +36,25 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     html = html + end_html
     return html
 
-    
-def write_html(start_date, end_date, filename, prefix):
-    f = open(filename, 'w')
-    
-    start_html = '''<head>
-  <link rel="stylesheet" type="text/css" href="viz.css">
-</head>
-<body>'''
-    end_html = '''
-</body>'''
-    f.write(start_html)
-    
-    # need to pad at the beginning and end to get a rectangular grid
-    extra_days_start = start_date.weekday() + 1
-    start_date_with_padding = start_date - timedelta(days=extra_days_start)
-
-    extra_days_end = 5 - end_date.weekday()
-    if extra_days_end == -1:
-        extra_days_end = 6
-    end_date_with_padding = end_date + timedelta(days=extra_days_end)
-    
-    f.write(get_calendar_html_for_date_range(start_date_with_padding, end_date_with_padding, prefix))
-    f.write(end_html)
-
-def write_css(dances, filename, prefix, key_generator):
-    f = open(filename, 'w')
-
+def get_css_string(dances, prefix, key_generator):
     start_css = '''
 .day {
     width: 20px;
     height: 20px;
 }
 '''
+    css = start_css
+
     for dance in dances:
         dance_css = '''
 .%s {
     background-color: #%s;
 }
 ''' % (class_name_for_date_with_prefix(prefix, dance.date), color_for_string(key_generator(dance)))
-        f.write(dance_css)
+        css = css + dance_css
         
-    f.write(start_css)
-
+    return css
+    
 def color_for_string(s):
     # TODO: handle spaces
     # TODO: this should somehow deal with common prefixes
