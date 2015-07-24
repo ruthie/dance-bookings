@@ -2,9 +2,7 @@ from datetime import timedelta, date
 
 # TODO: add support for multiple dances per day
 # TODO: add support for bands
-# TODO: move generation to another file
 # TODO: tooltips
-from bookings import parse_file
 
 def class_name_for_date(d):
     return "day-{}".format(str(d))
@@ -78,16 +76,5 @@ def hex_chars_for_char(c):
     # remove the "0x"
     hex_val = hex(int_val)[2:]
     return hex_val
-    
-    
-if __name__ == "__main__":
-    start = date(year=2013, month=10, day=1)
-    end = date(year=2015, month=9, day=30)
-    write_html(start, end, '/Users/ruthie/Desktop/contra_bookings/viz.html')
-
-    filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
-    dances = parse_file(filename)
-    
-    write_css(dances, '/Users/ruthie/Desktop/contra_bookings/viz.css')
 
     
