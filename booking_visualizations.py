@@ -10,6 +10,9 @@ def write_html(dances, filename):
     
     band_html = get_calendar_html_for_date_range(start_date, end_date, "band")
     caller_html = get_calendar_html_for_date_range(start_date, end_date, "caller")
+
+    band_location_html = get_calendar_html_for_date_range(start_date, end_date, "band-loc")
+    caller_location_html = get_calendar_html_for_date_range(start_date, end_date, "caller-loc")
     
     html = '''<head>
   <title>Bay Area Dance Booking Visualization</title>
@@ -21,7 +24,12 @@ def write_html(dances, filename):
   {}
   <h2>callers</h2>
   {}
-</body>'''.format(band_html, caller_html)
+  <h2>band homes</h2>
+  {}
+  <h2>caller homes</h2>
+  {}
+
+</body>'''.format(band_html, caller_html, band_location_html, caller_location_html)
     f.write(html)
 
 def write_css(dances, css_filename):
@@ -47,13 +55,21 @@ table {
 
     band_color_map = make_color_map([d.band.name for d in dances])
     caller_color_map = make_color_map([d.callers[0].name for d in dances])
-    
+    location_color_map = make_color_map(
+        [d.band.members[0].location for d in dances] + [d.callers[0].location for d in dances]
+    )
+
+
     band_css = get_css_string(dances, "band", lambda d: band_color_map[d.band.name])
-    caller_css = get_css_string(dances, "caller", lambda d: caller_color_map[d.callers[0].name])
+    caller_css = get_css_string(dances, "caller", lambda d: caller_color_map[d.callers[0].name])    
+    band_location_css = get_css_string(dances, "band-loc", lambda d: location_color_map[d.band.members[0].location])
+    caller_location_css = get_css_string(dances, "caller-loc", lambda d: location_color_map[d.callers[0].location])
 
     f.write(start_css)
     f.write(band_css)
     f.write(caller_css)
+    f.write(band_location_css)
+    f.write(caller_location_css)
 
 def write_dance_visualizations():
     input_filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
