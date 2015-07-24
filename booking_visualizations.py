@@ -39,8 +39,11 @@ table {
 }
 '''
 
-    band_css = get_css_string(dances, "band", lambda d: color_for_string(d.band.name))
-    caller_css = get_css_string(dances, "caller", lambda d: color_for_string(d.callers[0].name))
+    band_color_map = make_color_map([d.band.name for d in dances])
+    caller_color_map = make_color_map([d.callers[0].name for d in dances])
+    
+    band_css = get_css_string(dances, "band", lambda d: band_color_map[d.band.name])
+    caller_css = get_css_string(dances, "caller", lambda d: caller_color_map[d.callers[0].name])
 
     f.write(start_css)
     f.write(band_css)

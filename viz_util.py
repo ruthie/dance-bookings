@@ -1,4 +1,5 @@
 from datetime import timedelta, date
+import math
 
 def class_name_for_date_with_prefix(prefix, date):
     return "{}-{}".format(prefix, str(date))
@@ -46,27 +47,26 @@ def get_css_string(dances, prefix, key_generator):
         
     return css
 
-def color_for_string(s):
-    s = s.lower()
 
-    if s.startswith("the "):
-        s = s[4:]
+# coloring related things
+def int_to_six_digit_hex(i):
+    h = hex(int(i))
+    # cut off the initial "0x"
+    h = h[2:]
+    while len(h) < 6:
+        h = "0" + h
+    return h
 
-    return hex_chars_for_char(s[0]) + hex_chars_for_char(s[1]) + hex_chars_for_char(s[2])
+# assigns colors evenly over the full range of possible colors
+def make_color_map(keys):
+    keys_list = list(set(keys))
+    keys_list.sort()
+    m = {}
 
-def hex_chars_for_char(c):
-    scale_factor = 16*16/26
+    max_color = math.pow(16, 6)
+    for i in range(len(keys_list)):
+        k = keys_list[i]
+        int_val = math.floor(max_color * (i * 1.0/len(keys_list)))
+        m[k] = int_to_six_digit_hex(int_val)
 
-    int_val = (ord(c) - ord('a')) * scale_factor
-    # not a letter case
-    if int_val < 0 or int_val >= 26*scale_factor:
-        return "00"
-    
-    # remove the "0x"
-    hex_val = hex(int_val)[2:]
-    # if you get a number like 9 here, we actually want "09"
-    if len(hex_val) == 1:
-        hex_val = "0" + hex_val
-    return hex_val
-
-    
+    return m
