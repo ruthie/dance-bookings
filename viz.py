@@ -4,18 +4,38 @@ from datetime import timedelta, date
 # TODO: add support for multiple dances per day
 # TODO: tooltips
 
-def class_name_for_date(d):
-    return "day-{}".format(str(d))
+def class_name_for_date_with_prefix(prefix, date):
+    return "{}-{}".format(prefix, str(date))
 
-def write_html(start_date, end_date, filename):
+def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
+    start_html = '<table>'
+    end_html = '</table>'
+
+    html = start_html
+    next_date = start_date
+    while next_date <= end_date:
+        row_start = "<tr>"
+        row_end = "</tr>\n"
+
+        html = html + row_start
+        for i in range(7):
+            html = html + '<td><div class="day {}"></td>'.format(class_name_for_date_with_prefix(css_prefix, next_date))
+            next_date = next_date + timedelta(days=1)
+        
+        html = html + row_end
+
+    html = html + end_html
+    return html
+
+    
+def write_html(start_date, end_date, filename, prefix):
     f = open(filename, 'w')
     
     start_html = '''<head>
   <link rel="stylesheet" type="text/css" href="viz.css">
 </head>
-<body>
-  <table>'''
-    end_html = '''  </table>
+<body>'''
+    end_html = '''
 </body>'''
     f.write(start_html)
     
@@ -28,21 +48,10 @@ def write_html(start_date, end_date, filename):
         extra_days_end = 6
     end_date_with_padding = end_date + timedelta(days=extra_days_end)
     
-    next_date = start_date_with_padding
-    while next_date <= end_date_with_padding:
-        row_start = "<tr>"
-        row_end = "</tr>\n"
-        f.write(row_start)
-
-        for i in range(7):
-            f.write('<td><div class="day {}"></td>'.format(class_name_for_date(next_date)))
-            next_date = next_date + timedelta(days=1)
-        
-        f.write(row_end)
-
+    f.write(get_calendar_html_for_date_range(start_date_with_padding, end_date_with_padding, prefix))
     f.write(end_html)
 
-def write_css(dances, filename):
+def write_css(dances, filename, prefix, key_generator):
     f = open(filename, 'w')
 
     start_css = '''
@@ -56,7 +65,7 @@ def write_css(dances, filename):
 .%s {
     background-color: #%s;
 }
-''' % (class_name_for_date(dance.date), color_for_string(dance.band.name))
+''' % (class_name_for_date_with_prefix(prefix, dance.date), color_for_string(key_generator(dance)))
         f.write(dance_css)
         
     f.write(start_css)

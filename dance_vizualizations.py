@@ -10,8 +10,11 @@ def write_dance_visualizations():
     dances = parse_file(input_filename)
     dance_dates = [d.date for d in dances]
 
-    write_html(min(dance_dates), max(dance_dates), html_filename)
-    write_css(dances, css_filename)
+    write_html(min(dance_dates), max(dance_dates), html_filename, "caller")
+    write_css(dances, css_filename, "caller", lambda x: x.callers[0].name)
+
+    #write_html(min(dance_dates), max(dance_dates), html_filename, "band")
+    #write_css(dances, css_filename, "band", lambda x: x.band.name)
     
 if __name__ == "__main__":
     write_dance_visualizations()
