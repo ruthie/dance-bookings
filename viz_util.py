@@ -23,15 +23,19 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
 
     # first we need a row with years in it
     next_date = start_date_with_padding
-    last_date = None
     row = row_start
-    while next_date <= end_date_with_padding:
-        if not last_date or next_date.year > last_date.year:
-            row = row + "<td>{}</td>".format(next_date.year)
-        else:
-            row = row + "<td></td>"
-        last_date = next_date
-        next_date = next_date + timedelta(days=7)
+    while next_date < end_date_with_padding:
+        # figure out how many columns until it's not this year
+        # we actually want start of next year or the end of the graph, whichever comes first
+        end_of_week = next_date + timedelta(days=7)
+        start_of_next_year = min(date(year=end_of_week.year + 1, month=1, day=1), end_date_with_padding + timedelta(days=1))
+        time_until_next_year = start_of_next_year - end_of_week
+        # we round down so that the next label is on a column that starts
+        weeks_until_next_year = max(int(time_until_next_year.days/7 +1), 1)
+
+        row = row + "<td colspan={1}>{0} </td>".format(end_of_week.year, weeks_until_next_year)
+
+        next_date = next_date + timedelta(days=7*weeks_until_next_year )
 
     html = html + row + row_end        
     
