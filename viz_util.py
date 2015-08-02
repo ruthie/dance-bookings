@@ -4,6 +4,51 @@ import math
 def class_name_for_date_with_prefix(prefix, date):
     return "{}-{}".format(prefix, str(date))
 
+def get_location_html_for_dances(dances, css_prefix):
+    # first we need to sort the dances by location
+    dances_by_location = {}
+    for d in dances:
+        if d.location not in dances_by_location:
+            dances_by_location[d.location] = []
+        dances_by_location[d.location].append(d)
+
+    start_html = '<table><tr>'
+    end_html = '</tr></table>'
+    html = start_html
+
+    # todo: sort locations by number of dances
+    # let's sort locations alphabetically
+    for location in sorted(dances_by_location.keys()):
+        # skip locations with few dances
+        # these are all special events, and not good comparisons for other locations
+        if len(dances_by_location[location]) < 7:
+            continue
+            
+        location_html = get_location_html(dances_by_location[location], css_prefix)
+        html = html + '<td>'+ location_html + '</td>'
+
+    html = html + end_html
+    
+    return html
+    
+def get_location_html(dances, prefix):
+    # todo: sort dances by date
+    start_html = '<h3>{}</h3><table><tr>'.format(dances[0].location)
+    end_html = '</tr></table>'
+    html = start_html
+
+    row_length = math.ceil(len(dances)/7.0)
+    for i in range(len(dances)):
+        if i % row_length == 0:
+            html = html  + '</tr><tr>'
+        d = dances[i]
+        # todo: actually correct thing for dates
+        html = html + '<td><div class="day tooltip {}"></td>'.format(class_name_for_date_with_prefix(prefix, d.date))
+        
+    html = html + end_html
+    
+    return html
+
 def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     start_html = '<table>'
     end_html = '</table>'

@@ -10,14 +10,14 @@ def write_html(dances, filename):
     dance_dates = [d.date for d in dances]
     (start_date, end_date) = (min(dance_dates), max(dance_dates))
     
-    band_html = get_calendar_html_for_date_range(start_date, end_date, "band")
-    caller_html = get_calendar_html_for_date_range(start_date, end_date, "caller")
+    band_html = get_location_html_for_dances(dances, "band")
+    caller_html = get_location_html_for_dances(dances, "caller")
 
-    band_location_html = get_calendar_html_for_date_range(start_date, end_date, "band-loc")
-    caller_location_html = get_calendar_html_for_date_range(start_date, end_date, "caller-loc")
+    band_location_html = get_location_html_for_dances(dances, "band-loc")
+    caller_location_html = get_location_html_for_dances(dances, "caller-loc")
 
-    band_gender_html = get_calendar_html_for_date_range(start_date, end_date, "band-gender")
-    caller_gender_html = get_calendar_html_for_date_range(start_date, end_date, "caller-gender")
+    band_gender_html = get_location_html_for_dances(dances, "band-gender")
+    caller_gender_html = get_location_html_for_dances(dances, "caller-gender")
     
     html = '''<head>
   <title>Bay Area Dance Booking Visualization</title>
