@@ -51,6 +51,22 @@ body {
     font-size: xx-large;
 }
 
+.tooltip:hover:after {
+    display: inline;
+    position: absolute;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 1px 1px 4px #000;
+    background-color: #fff;
+    margin-left: 5px;
+    margin-top: -25px;
+    padding: 3px;
+}
+
+.tooltip:after {
+    display: none;
+}
+
 .day {
     width: 10px;
     height: 10px;

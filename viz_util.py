@@ -45,7 +45,7 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
 
         html = html + row_start
         while next_date <= end_date_with_padding:
-            html = html + '<td><div class="day {}"></td>'.format(class_name_for_date_with_prefix(css_prefix, next_date))
+            html = html + '<td><div class="day tooltip {}"></td>'.format(class_name_for_date_with_prefix(css_prefix, next_date))
             next_date = next_date + timedelta(days=7) # a week later!
         
         html = html + row_end
@@ -56,11 +56,16 @@ def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
 def get_css_string(dances, prefix, key_generator):
     css = ''
     for dance in dances:
+        class_name = class_name_for_date_with_prefix(prefix, dance.date)
         dance_css = '''
 .%s {
     background-color: #%s;
 }
-''' % (class_name_for_date_with_prefix(prefix, dance.date), key_generator(dance))
+
+.%s:after {
+    content: "%s";
+}
+''' % (class_name, key_generator(dance), class_name, str(dance))
         css = css + dance_css
         
     return css
