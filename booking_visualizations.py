@@ -1,51 +1,99 @@
 from datetime import date
+from random import choice
+from string import lowercase
+
 from bookings import parse_file
 from viz_util import *
 from gender import gender_color_for_people
 from color_util import make_color_map
 
-def write_html(dances, filename):
-    f = open(filename, 'w')
 
-    dance_dates = [d.date for d in dances]
-    (start_date, end_date) = (min(dance_dates), max(dance_dates))
+def write_dance_visualizations():
+    input_filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
+    html_filename = '/Users/ruthie/Desktop/contra_bookings/viz.html'
+    css_filename = '/Users/ruthie/Desktop/contra_bookings/viz.css'
+
+    dances = parse_file(input_filename)
+
+    write_files(dances, 'viz')
+
+def write_files(dances, filename):
+    html_f = open(filename + '.html', 'w')
+    css_f = open(filename + '.css', 'w')
+
+    write_html_start(html_f)
+    write_css_start(css_f)
+
+    # setup: we need color maps for bands and callers
+    band_color_map = make_color_map([d.band.name for d in dances])
+    caller_color_map = make_color_map([d.callers[0].name for d in dances])
+    location_color_map = make_color_map(
+        [d.band.members[0].location for d in dances] + [d.callers[0].location for d in dances]
+    )
+
+    viz_specs = [
+        (
+            ' By Name',
+            lambda d: band_color_map[d.band.name],
+            lambda d: caller_color_map[d.callers[0].name],
+        ),
+        (
+            ' By Home State',
+            lambda d: location_color_map[d.band.members[0].location],
+            lambda d: location_color_map[d.callers[0].location],
+        ),
+        (
+            ' By Gender',
+            lambda d: gender_color_for_people(d.band.members),
+            lambda d: gender_color_for_people(d.callers),
+        ),
+    ]
+
+    for viz in viz_specs:
+        html, css = get_html_css_for_visualization(dances, *viz)
+        html_f.write(html)
+        css_f.write(css)
+
+    write_html_end(html_f)
+
+def get_html_css_for_visualization(dances, desc, band_color_generator, caller_color_generator):
+    prefix = desc.lower().replace(' ', '-') + '-'
+    band_prefix = 'band-' + prefix
+    caller_prefix = 'caller-' + prefix
     
-    band_html = get_location_html_for_dances(dances, "band")
-    caller_html = get_location_html_for_dances(dances, "caller")
+    band_html = get_location_html_for_dances(dances, band_prefix)
+    caller_html = get_location_html_for_dances(dances, caller_prefix)
 
-    band_location_html = get_location_html_for_dances(dances, "band-loc")
-    caller_location_html = get_location_html_for_dances(dances, "caller-loc")
+    html = '''<table class="viz-container"><tr>
+<td>
+<h2>Bands {0}</h2>
+{1}
+</td>
+<td>
+<h2>Callers {0}</h2>
+{2}
+</td></tr></table>'''.format(desc, band_html, caller_html)
 
-    band_gender_html = get_location_html_for_dances(dances, "band-gender")
-    caller_gender_html = get_location_html_for_dances(dances, "caller-gender")
+    band_css = get_css_string(dances, band_prefix, band_color_generator)
+    caller_css = get_css_string(dances, caller_prefix, caller_color_generator)
+    css = band_css + caller_css
     
-    html = '''<head>
-  <title>Bay Area Dance Booking Visualization</title>
+    return html, css
+    
+def write_html_start(f):
+    start_html = '''<head>
+  <title>Bay Area Contra Dance Booking Visualization</title>
   <link rel="stylesheet" type="text/css" href="viz.css">
 </head>
 <body>
-  <h1>Bay Area Contra Dance Bookings</h1>
-  <h2>bands</h2>
-  {}
-  <h2>callers</h2>
-  {}
-  <h2>band homes</h2>
-  {}
-  <h2>caller homes</h2>
-  {}
-  <h2>band gender</h2>
-  {}
-  <h2>caller gender</h2>
-  {}
+<h1>Bay Area Contra Dance Bookings</h1>
+'''
+    f.write(start_html)
 
-</body>'''.format(band_html, caller_html, band_location_html, caller_location_html, band_gender_html, caller_gender_html)
-    f.write(html)
+def write_html_end(f):
+    f.write('</body>')
 
-def write_css(dances, css_filename):
-    f = open(css_filename, 'w')
-
-    width_percentage = 1.0 / (len(dances) / 7 + 1)
-    
+def write_css_start(f):
     start_css = '''
 body {
     font-family: sans-serif;
@@ -76,41 +124,13 @@ body {
 table {
     border-spacing: 1px;
 }
+
+table.viz-container {
+    width: 100%;
+    padding-bottom: 50px;
+}
 '''
-
-    band_color_map = make_color_map([d.band.name for d in dances])
-    caller_color_map = make_color_map([d.callers[0].name for d in dances])
-    location_color_map = make_color_map(
-        [d.band.members[0].location for d in dances] + [d.callers[0].location for d in dances]
-    )
-
-
-    band_css = get_css_string(dances, "band", lambda d: band_color_map[d.band.name])
-    caller_css = get_css_string(dances, "caller", lambda d: caller_color_map[d.callers[0].name])    
-    band_location_css = get_css_string(dances, "band-loc", lambda d: location_color_map[d.band.members[0].location])
-    caller_location_css = get_css_string(dances, "caller-loc", lambda d: location_color_map[d.callers[0].location])
-    band_gender_css = get_css_string(dances, "band-gender", lambda d: gender_color_for_people(d.band.members))
-    caller_gender_css = get_css_string(dances, "caller-gender", lambda d: gender_color_for_people(d.callers))
-
     f.write(start_css)
-    f.write(band_css)
-    f.write(caller_css)
-    f.write(band_location_css)
-    f.write(caller_location_css)
-    f.write(band_gender_css)
-    f.write(caller_gender_css)
-
-    
-    
-def write_dance_visualizations():
-    input_filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
-    html_filename = '/Users/ruthie/Desktop/contra_bookings/viz.html'
-    css_filename = '/Users/ruthie/Desktop/contra_bookings/viz.css'
-
-    dances = parse_file(input_filename)
-
-    write_html(dances, html_filename)
-    write_css(dances, css_filename)
-    
+        
 if __name__ == "__main__":
     write_dance_visualizations()
