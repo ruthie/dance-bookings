@@ -2,6 +2,7 @@ from datetime import date
 from bookings import parse_file
 from viz_util import *
 from gender import gender_color_for_people
+from color_util import make_color_map
 
 def write_html(dances, filename):
     f = open(filename, 'w')

@@ -1,6 +1,6 @@
 import sexmachine.detector as gender
 
-from viz_util import int_to_two_digit_hex
+from color_util import int_to_two_digit_hex
 
 d = gender.Detector(case_sensitive=False)
 
