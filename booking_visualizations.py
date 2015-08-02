@@ -1,6 +1,7 @@
 from datetime import date
 from bookings import parse_file
 from viz_util import *
+from gender import gender_color_for_people
 
 def write_html(dances, filename):
     f = open(filename, 'w')
@@ -13,6 +14,9 @@ def write_html(dances, filename):
 
     band_location_html = get_calendar_html_for_date_range(start_date, end_date, "band-loc")
     caller_location_html = get_calendar_html_for_date_range(start_date, end_date, "caller-loc")
+
+    band_gender_html = get_calendar_html_for_date_range(start_date, end_date, "band-gender")
+    caller_gender_html = get_calendar_html_for_date_range(start_date, end_date, "caller-gender")
     
     html = '''<head>
   <title>Bay Area Dance Booking Visualization</title>
@@ -28,8 +32,12 @@ def write_html(dances, filename):
   {}
   <h2>caller homes</h2>
   {}
+  <h2>band gender</h2>
+  {}
+  <h2>caller gender</h2>
+  {}
 
-</body>'''.format(band_html, caller_html, band_location_html, caller_location_html)
+</body>'''.format(band_html, caller_html, band_location_html, caller_location_html, band_gender_html, caller_gender_html)
     f.write(html)
 
 def write_css(dances, css_filename):
@@ -64,13 +72,19 @@ table {
     caller_css = get_css_string(dances, "caller", lambda d: caller_color_map[d.callers[0].name])    
     band_location_css = get_css_string(dances, "band-loc", lambda d: location_color_map[d.band.members[0].location])
     caller_location_css = get_css_string(dances, "caller-loc", lambda d: location_color_map[d.callers[0].location])
+    band_gender_css = get_css_string(dances, "band-gender", lambda d: gender_color_for_people(d.band.members))
+    caller_gender_css = get_css_string(dances, "caller-gender", lambda d: gender_color_for_people(d.callers))
 
     f.write(start_css)
     f.write(band_css)
     f.write(caller_css)
     f.write(band_location_css)
     f.write(caller_location_css)
+    f.write(band_gender_css)
+    f.write(caller_gender_css)
 
+    
+    
 def write_dance_visualizations():
     input_filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     html_filename = '/Users/ruthie/Desktop/contra_bookings/viz.html'

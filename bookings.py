@@ -119,5 +119,8 @@ def print_dict_value_ordered(d):
 if __name__ == "__main__":
     filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
     dances = parse_file(filename)
-    for d in dances:
-        print(d)
+    bands = get_most_booked_bands(dances)
+    callers = get_most_booked_callers(dances)
+    musicians = get_most_booked_musicians(dances)
+
+    print_dict_value_ordered(musicians)
