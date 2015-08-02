@@ -1,5 +1,5 @@
 import sexmachine.detector as gender
-
+import spectra
 from color_util import int_to_two_digit_hex
 
 d = gender.Detector(case_sensitive=False)
@@ -9,9 +9,9 @@ def gender_color_for_people(people):
     average_gender = sum(gender_values)/len(gender_values)
 
     # now we turn the number into a color.  Yellow for men, red for women.
-    adjusted_gender_number = max(0, average_gender * 16 * 16 -1)
-    cyan_hex = int_to_two_digit_hex(adjusted_gender_number)
-    color = "FF" + cyan_hex + "00"
+    scale = spectra.scale(['red', 'purple'])
+    # this library returns the hexcode with the hash, we don't expect it, so chop it off
+    color = scale(average_gender).hexcode[1:]
     return color
     
 def get_gender_for_name(name):
