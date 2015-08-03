@@ -11,7 +11,9 @@ from color_util import make_color_map
 def write_dance_visualizations():
     dance_filenames = [
         '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv',
-        '/Users/ruthie/Desktop/contra_bookings/queer_contra_bookings.csv'
+        '/Users/ruthie/Desktop/contra_bookings/queer_contra_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/hayward_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/nbcds_bookings.csv',
     ]
     html_filename = '/Users/ruthie/Desktop/contra_bookings/viz.html'
     css_filename = '/Users/ruthie/Desktop/contra_bookings/viz.css'

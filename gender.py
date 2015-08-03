@@ -24,6 +24,12 @@ def get_gender_for_name(name):
         return 1.0
     elif name == 'Charlie Fenton':
         return 1.0
+    elif name == 'Kalia Kliban':
+        return 0.0
+    elif name == 'Robin Steen':
+        return 0.0
+    elif name == 'Frannie Mar':
+        return 0.0
     
     first_name = name.split(" ")[0]
     gender_word = d.get_gender(first_name)
