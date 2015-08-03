@@ -134,6 +134,11 @@ table.viz-container {
     width: 100%;
     padding-bottom: 50px;
 }
+
+td.location-container {
+    width: 1px;
+    vertical-align: top;
+}
 '''
     f.write(start_css)
         

@@ -16,37 +16,56 @@ def get_location_html_for_dances(dances, css_prefix):
     end_html = '</tr></table>'
     html = start_html
 
+    # row headers
+    locations = sorted(dances_by_location.keys())
+    locations = [l for l in locations if len(dances_by_location[l]) > 7]
+
+    # column headers
+    row_html = "<tr>"
+    for location in locations:
+        row_html = row_html + '<td  class="location-container"><b>{}</b></td>'.format(location)
+    row_html = row_html + "</tr>"
+    html = html + row_html
+        
     # let's sort locations alphabetically
-    for location in sorted(dances_by_location.keys()):
+    for location in locations:
         # skip locations with few dances
-        # these are all special events, and not good comparisons for other locations
-        if len(dances_by_location[location]) < 7:
-            continue
-            
+        # these are all special events, and not good comparisons for other locations            
         location_html = get_location_html(dances_by_location[location], css_prefix)
-        html = html + '<td>'+ location_html + '</td>'
+        html = html + '<td class="location-container">'+ location_html + '</td>'
 
     html = html + end_html
     
     return html
     
 def get_location_html(dances, prefix):
-    # todo: sort dances by date
-    start_html = '<h3>{}</h3><table><tr>'.format(dances[0].location)
+    start_html = '<table><tr>'.format(dances[0].location)
     end_html = '</tr></table>'
     html = start_html
 
-    row_length = math.ceil(len(dances)/7.0)
-    for i in range(len(dances)):
-        if i % row_length == 0:
-            html = html  + '</tr><tr>'
-        d = dances[i]
-        # todo: actually correct thing for dates
-        html = html + '<td><div class="day tooltip {}"></td>'.format(class_name_for_date_with_prefix(prefix, d.date))
-        
+    height = 7
+    row_length = int(math.ceil(len(dances)/float(height)))
+    dances.sort(key=lambda d: d.date)
+
+    # ok, we're going right to left chronologically
+    for i in range(height):
+        row_html = '<tr>'
+        for j in range(row_length):
+            dance_index = height * j + i # left to right, up to down
+            if dance_index >= len(dances):
+                break
+            d = dances[dance_index]
+            # todo: actually correct thing for prefixes
+            row_html = row_html + html_for_dance(d, prefix)
+        row_html = row_html + '</tr>'
+        html = html + row_html
+
     html = html + end_html
     
     return html
+
+def html_for_dance(dance, prefix):
+    return '<td><div class="day tooltip {}"></td>'.format(class_name_for_date_with_prefix(prefix, dance.date))
 
 def get_calendar_html_for_date_range(start_date, end_date, css_prefix):
     start_html = '<table>'
