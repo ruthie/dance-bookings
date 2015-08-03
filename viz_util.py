@@ -16,7 +16,6 @@ def get_location_html_for_dances(dances, css_prefix):
     end_html = '</tr></table>'
     html = start_html
 
-    # todo: sort locations by number of dances
     # let's sort locations alphabetically
     for location in sorted(dances_by_location.keys()):
         # skip locations with few dances

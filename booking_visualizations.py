@@ -9,11 +9,16 @@ from color_util import make_color_map
 
 
 def write_dance_visualizations():
-    input_filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
+    dance_filenames = [
+        '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/queer_contra_bookings.csv'
+    ]
     html_filename = '/Users/ruthie/Desktop/contra_bookings/viz.html'
     css_filename = '/Users/ruthie/Desktop/contra_bookings/viz.css'
 
-    dances = parse_file(input_filename)
+    dances = []
+    for input_filename in dance_filenames:
+        dances = dances + parse_file(input_filename)
 
     write_files(dances, 'viz')
 

@@ -1,7 +1,8 @@
 *~
-#*
-.#*
+\#*
+.\#*
 *.pyc
 viz.html
 viz.css
 bookings/*
+todos
