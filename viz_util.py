@@ -19,7 +19,7 @@ def get_location_html_for_dances(dances, css_prefix):
     html = start_html
 
     # row headers
-    locations = sorted(dances_by_location.keys())
+    locations = sorted(dances_by_location.keys(), key=lambda x: len(dances_by_location[x]), reverse=True)
     locations = [l for l in locations if len(dances_by_location[l]) > height]
 
     # column headers
