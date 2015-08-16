@@ -42,6 +42,10 @@ def get_name_location(s):
     (name, loc) = s.split("[")
     return name.strip(), loc.strip()[:-1].strip()
 
+def get_gigs_for_band(band_name, dances):
+    gigs = [d for d in dances if d.band.name == band_name]
+    return gigs
+
 def date_from_string(s):
     (month, day, year) = s.strip().split("/")
     return date(month=int(month), day=int(day), year=int(year))
@@ -115,10 +119,23 @@ def print_dict_value_ordered(d):
 
     for k in od:
         print("{}: {}".format(k, od[k]))
-        
+
+def get_all_dances():
+    dance_filenames = [
+        '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/queer_contra_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/hayward_bookings.csv',
+        '/Users/ruthie/Desktop/contra_bookings/nbcds_bookings.csv',
+    ]
+
+    dances = []
+    for input_filename in dance_filenames:
+        dances = dances + parse_file(input_filename)
+    return dances
+    
 if __name__ == "__main__":
-    filename = '/Users/ruthie/Desktop/contra_bookings/bacds_bookings.csv'
-    dances = parse_file(filename)
+    dances = get_all_dances()
+    
     bands = get_most_booked_bands(dances)
     callers = get_most_booked_callers(dances)
     musicians = get_most_booked_musicians(dances)
