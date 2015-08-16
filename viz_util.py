@@ -1,6 +1,8 @@
 from datetime import timedelta, date
 import math
 
+height = 10
+
 def class_name_for_date_with_prefix(prefix, date):
     return "{}-{}".format(prefix, str(date))
 
@@ -18,7 +20,7 @@ def get_location_html_for_dances(dances, css_prefix):
 
     # row headers
     locations = sorted(dances_by_location.keys())
-    locations = [l for l in locations if len(dances_by_location[l]) > 7]
+    locations = [l for l in locations if len(dances_by_location[l]) > height]
 
     # column headers
     row_html = "<tr>"
@@ -37,13 +39,12 @@ def get_location_html_for_dances(dances, css_prefix):
     html = html + end_html
     
     return html
-    
+
 def get_location_html(dances, prefix):
     start_html = '<table><tr>'.format(dances[0].location)
     end_html = '</tr></table>'
     html = start_html
 
-    height = 7
     row_length = int(math.ceil(len(dances)/float(height)))
     dances.sort(key=lambda d: d.date)
 
