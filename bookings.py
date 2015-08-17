@@ -71,6 +71,10 @@ def get_gigs_for_band(band_name, dances):
     gigs = [d for d in dances if d.band.name == band_name]
     return gigs
 
+def get_bands_for_musician(musician_name, dances):
+    bands = [d.band.name for d in dances if musician_name in [m.name for m in d.band.members]]
+    return bands
+
 def date_from_string(s):
     (month, day, year) = s.strip().split("/")
     return date(month=int(month), day=int(day), year=int(year))
@@ -162,17 +166,42 @@ def get_all_dances():
     for input_filename in dance_filenames:
         dances = dances + parse_file(input_filename)
     return dances
+
+def is_band_local(band):
+    locations = [m.location for m in band.members]
+    return 'Bay Area' in locations
+
+def get_top_local_bands(dances):
+    local_band_gigs = [d.band.name for d in dances if is_band_local(d.band)]
+    most_booked_bands = Counter(local_band_gigs)
+    bands = most_booked_bands.most_common()
+    return bands
+
+def print_local_band_info(dances):
+    bands = get_top_local_bands(dances)[:11]
+    for (name, count) in bands:
+        print("* {} ({})".format(name, count))
+
+    for (band_name, _) in bands[:11]:
+        gigs = get_gigs_for_band(band_name, dances)
+        gig_counts = Counter(frequency_dict(gigs, lambda x: [x.location]))
+
+        print(band_name, len(gig_counts))
+        print()
+
+def print_bands_for_each_musician(dances):
+    musicians = get_most_booked_musicians(dances)
+    counter = Counter(musicians)
+    for (m, count) in counter.most_common(20):
+        bands = get_bands_for_musician(m, dances)
+        counter = Counter(bands)
+        num_bands = len(counter.most_common())
+        most_booked_band = counter.most_common(1)[0][1]
+        import math
+        percentage_with_most_booked_band = math.trunc(100.0*most_booked_band/len(bands))
+        
+        print("* {} ({}) bands: {}, {}".format(m, count, num_bands, percentage_with_most_booked_band))
+        print(counter.most_common())
     
 if __name__ == "__main__":
     dances = get_all_dances()
-    
-    bands = get_most_booked_bands(dances)
-    callers = get_most_booked_callers(dances)
-    musicians = get_most_booked_musicians(dances)
-
-    most_booked_bands = Counter(bands).most_common(12)
-    for (band_name, _) in most_booked_bands:
-        gigs = get_gigs_for_band(band_name, dances)
-        gig_counts = frequency_dict(gigs, lambda x: [x.location])
-        print(band_name)
-        print(gig_counts)
