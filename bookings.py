@@ -85,6 +85,7 @@ def parse_file(filename):
 
     for l in lines:
         (dance_date, dance_location, callers, band_info) = l.split(",", 3)
+        band_info = band_info[1:-2] # get rid of newline and quotes
 
         # caller info
         callers_list = []
@@ -187,7 +188,6 @@ def print_local_band_info(dances):
         gig_counts = Counter(frequency_dict(gigs, lambda x: [x.location]))
 
         print(band_name, len(gig_counts))
-        print()
 
 def print_bands_for_each_musician(dances):
     musicians = get_most_booked_musicians(dances)
