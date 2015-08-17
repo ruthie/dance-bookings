@@ -10,9 +10,9 @@ def get_location_html_for_dances(dances, css_prefix):
     # first we need to sort the dances by location
     dances_by_location = {}
     for d in dances:
-        if d.location not in dances_by_location:
-            dances_by_location[d.location] = []
-        dances_by_location[d.location].append(d)
+        if d.location.name not in dances_by_location:
+            dances_by_location[d.location.name] = []
+        dances_by_location[d.location.name].append(d)
 
     start_html = '<table><tr>'
     end_html = '</tr></table>'
@@ -41,7 +41,7 @@ def get_location_html_for_dances(dances, css_prefix):
     return html
 
 def get_location_html(dances, prefix):
-    start_html = '<table><tr>'.format(dances[0].location)
+    start_html = '<table><tr>'.format(dances[0].location.name)
     end_html = '</tr></table>'
     html = start_html
 
