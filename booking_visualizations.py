@@ -71,15 +71,11 @@ def get_html_css_for_visualization(dances, desc, band_color_generator, caller_co
     band_html = get_location_html_for_dances(dances, band_prefix)
     caller_html = get_location_html_for_dances(dances, caller_prefix)
 
-    html = '''<table class="viz-container"><tr>
-<td>
+    html = '''
 <h2>Bands {0}</h2>
 {1}
-</td>
-<td>
 <h2>Callers {0}</h2>
-{2}
-</td></tr></table>'''.format(desc, band_html, caller_html)
+{2}'''.format(desc, band_html, caller_html)
 
     band_css = get_css_string(dances, band_prefix, band_color_generator)
     caller_css = get_css_string(dances, caller_prefix, caller_color_generator)
